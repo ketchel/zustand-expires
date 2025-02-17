@@ -1,11 +1,24 @@
 import { StateCreator, StoreMutatorIdentifier } from 'zustand';
 
+/**
+ * Tells the middleware how to interpret the expiry value
+ *  @param Interval - The store will call onExpiry every `expiry` milliseconds
+ *  @param Timestamp - The store will call onExpiry at the timestamp `expiry` (in milliseconds)
+ *  @param StoreKey - The same as `Timestamp` but the timestamp is taken from the provided store key
+ */
 export enum ExpiryType {
     Interval = 'interval',
     Timestamp = 'timestamp',
     StoreKey = 'key'
 }
 
+/**
+ * Options for the expires middleware
+ *  @param expiry - The expiry value. Either a number of milliseconds, a timestamp in milliseconds, or a store key
+ *  @param expiryType - How to interpret the expiry value. Defaults to `Interval`
+ *  @param onExpiry - A function that returns a partial state that will be merged into the store when the store expires
+ *  @param buffer - A buffer in milliseconds. `onExpire` will be called `buffer` milliseconds before the actual expiry
+ */
 export type ExpiresOptions<T extends object> = {
   expiry: number | keyof T;
   expiryType: ExpiryType;
@@ -49,7 +62,7 @@ const expiresImpl: ExpiresImpl = (f, options) => (set, get, store) => {
         clearTimeout(timeoutId);
       }
 
-      const timeout = timeUntilStoreExpires() - (buffer || 0)
+      const timeout = timeUntilStoreExpires() - buffer
       if (timeout <= 0) {
           return;
       }
@@ -66,10 +79,9 @@ const expiresImpl: ExpiresImpl = (f, options) => (set, get, store) => {
         return f(set, get, store);
     }
 
-    // If we try to schedule right away the state will be undefined...
+    // If we try to schedule the timeout right away the state will be undefined
     // Therefore, we'll start it on the first set or get
     const onGet: typeof get = (...args) => {
-
         if (timeoutId === undefined) {
             scheduleExpiry();
         }
