@@ -14,16 +14,22 @@ export enum ExpiryType {
 
 /**
  * Options for the expires middleware
- *  @param expiry - The expiry value. Either a number of milliseconds, a timestamp in milliseconds, or a store key
+ *  @param expiry - (Milliseconds) The expiry value. Either a number of milliseconds, a UNIX timestamp (ms), or a store key
  *  @param expiryType - How to interpret the expiry value. Defaults to `Interval`
  *  @param onExpiry - A function that returns a partial state that will be merged into the store when the store expires
  *  @param buffer - A buffer in milliseconds. `onExpire` will be called `buffer` milliseconds before the actual expiry
  */
 export type ExpiresOptions<T extends object> = {
-  expiry: number | keyof T;
-  expiryType: ExpiryType;
-  onExpiry: () => Partial<T> | Promise<Partial<T>>;
-  buffer?: number;
+    expiry: number;
+    expiryType: ExpiryType.Interval | ExpiryType.Timestamp;
+    onExpiry: () => Partial<T> | Promise<Partial<T>>;
+    buffer?: number;
+} | 
+{
+    expiry: keyof T;
+    expiryType: ExpiryType.StoreKey;
+    onExpiry: () => Partial<T> | Promise<Partial<T>>;
+    buffer?: number;
 };
 
 export type Expires = <
@@ -51,7 +57,12 @@ const expiresImpl: ExpiresImpl = (f, options) => (set, get, store) => {
           case ExpiryType.StoreKey:
             const state = get()
             if (state && expiry in state) {
-                return (state[expiry]) - Date.now();
+                // @ts-ignore - We know that expiry is a key of T if we made it here
+                const expiryTimestamp = state[expiry];
+                if (typeof expiryTimestamp !== 'number') {
+                    throw new Error(`The value of ${String(expiry)} in the store must be a number`);
+                }
+                return expiryTimestamp - Date.now();
             }
             return 0;
       }
@@ -59,6 +70,7 @@ const expiresImpl: ExpiresImpl = (f, options) => (set, get, store) => {
 
     const scheduleExpiry = () => {
       if (timeoutId) {
+        console.log("Clearing timeout");
         clearTimeout(timeoutId);
       }
 
@@ -89,11 +101,11 @@ const expiresImpl: ExpiresImpl = (f, options) => (set, get, store) => {
     };
 
     // If the expiry is a store key, we need to reschedule the expiry whenever the key changes
-    const onSet: typeof set = (partial, replace) => {
+    const onSet: typeof set = (partial) => {
         if (expiry in partial) {
             scheduleExpiry();
         }
-        set(partial, replace);
+        set(partial);
     }
 
     store.getState = onGet;
