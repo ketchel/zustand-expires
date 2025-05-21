@@ -70,7 +70,6 @@ const expiresImpl: ExpiresImpl = (f, options) => (set, get, store) => {
 
     const scheduleExpiry = () => {
       if (timeoutId) {
-        console.log("Clearing timeout");
         clearTimeout(timeoutId);
       }
 
@@ -102,10 +101,13 @@ const expiresImpl: ExpiresImpl = (f, options) => (set, get, store) => {
 
     // If the expiry is a store key, we need to reschedule the expiry whenever the key changes
     const onSet: typeof set = (partial) => {
+        set(partial);
         if (expiry in partial) {
+            if (timeoutId) {
+                clearTimeout(timeoutId);
+            }
             scheduleExpiry();
         }
-        set(partial);
     }
 
     store.getState = onGet;

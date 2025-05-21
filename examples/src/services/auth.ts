@@ -1,4 +1,4 @@
-import { useAuthStore, expiresInMins } from "../stores/authStore";
+import { useAuthStore } from "../stores/authStore";
 import { useUserStore } from "../stores/userStore";
 import {AuthStatus} from "../types";
 
@@ -7,12 +7,12 @@ type RefreshTokenResponse = {
     refreshToken: string;
 }
 
+const expiresInMins = 2;
 
 export async function refreshToken(refreshToken: string): Promise<RefreshTokenResponse> {
-    console.log('Refreshing token');
     const jsonBody = JSON.stringify({
         refreshToken: refreshToken,
-        expiresInMins: 1,
+        expiresInMins: expiresInMins,
     })
 
     return await authFetch('refresh', jsonBody)

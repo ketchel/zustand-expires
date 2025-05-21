@@ -18,95 +18,95 @@ const advanceTimers = async (ms: number) => {
   await Promise.resolve();
 }
 
-// it('Should handle interval expiry', async () => {
-//   const onExpiry = jest.fn().mockReturnValue({ count: 0 });
-//   const useStore = create<TestState>(
-//     expires(
-//       (set) => ({
-//         count: 1,
-//         increment: () => set((state) => ({ count: state.count + 1 })),
-//       }),
-//       {
-//         expiry: 1000,
-//         expiryType: ExpiryType.Interval,
-//         onExpiry,
-//       }
-//     )
-//   );
+it('Should handle interval expiry', async () => {
+  const onExpiry = jest.fn().mockReturnValue({ count: 0 });
+  const useStore = create<TestState>(
+    expires(
+      (set) => ({
+        count: 1,
+        increment: () => set((state) => ({ count: state.count + 1 })),
+      }),
+      {
+        expiry: 1000,
+        expiryType: ExpiryType.Interval,
+        onExpiry,
+      }
+    )
+  );
 
-//   expect(useStore.getState().count).toBe(1);
-//   await advanceTimers(2000);
-//   expect(onExpiry).toHaveBeenCalled();
-//   expect(useStore.getState().count).toBe(0);
-// });
+  expect(useStore.getState().count).toBe(1);
+  await advanceTimers(2000);
+  expect(onExpiry).toHaveBeenCalled();
+  expect(useStore.getState().count).toBe(0);
+});
 
-// it('Should handle timestamp expiry', async () => {
-//   const onExpiry = jest.fn().mockReturnValue({ count: 0 });
-//   const useStore = create<TestState>(
-//     expires(
-//       (set) => ({
-//         count: 1,
-//         increment: () => set((state) => ({ count: state.count + 1 })),
-//       }),
-//       {
-//         expiry: Date.now() + 1000,
-//         expiryType: ExpiryType.Timestamp,
-//         onExpiry,
-//       }
-//     )
-//   );
+it('Should handle timestamp expiry', async () => {
+  const onExpiry = jest.fn().mockReturnValue({ count: 0 });
+  const useStore = create<TestState>(
+    expires(
+      (set) => ({
+        count: 1,
+        increment: () => set((state) => ({ count: state.count + 1 })),
+      }),
+      {
+        expiry: Date.now() + 1000,
+        expiryType: ExpiryType.Timestamp,
+        onExpiry,
+      }
+    )
+  );
 
-//   expect(useStore.getState().count).toBe(1);
-//   await advanceTimers(1000);
-//   expect(onExpiry).toHaveBeenCalled();
-//   expect(useStore.getState().count).toBe(0);
-// });
+  expect(useStore.getState().count).toBe(1);
+  await advanceTimers(1000);
+  expect(onExpiry).toHaveBeenCalled();
+  expect(useStore.getState().count).toBe(0);
+});
 
-// it('Should handle store key expiry', async () => {
-//   const onExpiry = jest.fn().mockReturnValue({ count: 0 });
-//   const useStore = create<TestState>(
-//     expires(
-//       (set) => ({
-//         count: 1,
-//         expiryTime: Date.now() + 1000,
-//         setExpiryTime: (time: number) => set({ expiryTime: time }),
-//       }),
-//       {
-//         expiry: 'expiryTime',
-//         expiryType: ExpiryType.StoreKey,
-//         onExpiry,
-//       }
-//     )
-//   );
+it('Should handle store key expiry', async () => {
+  const onExpiry = jest.fn().mockReturnValue({ count: 0 });
+  const useStore = create<TestState>(
+    expires(
+      (set) => ({
+        count: 1,
+        expiryTime: Date.now() + 1000,
+        setExpiryTime: (time: number) => set({ expiryTime: time }),
+      }),
+      {
+        expiry: 'expiryTime',
+        expiryType: ExpiryType.StoreKey,
+        onExpiry,
+      }
+    )
+  );
 
-//   expect(useStore.getState().count).toBe(1);
-//   await advanceTimers(1000);
-//   expect(onExpiry).toHaveBeenCalled();
-//   expect(useStore.getState().count).toBe(0);
-// });
+  expect(useStore.getState().count).toBe(1);
+  await advanceTimers(1000);
+  expect(onExpiry).toHaveBeenCalled();
+  expect(useStore.getState().count).toBe(0);
+});
 
-// it('Should handle buffer time', async () => {
-//   const onExpiry = jest.fn().mockReturnValue({ count: 0 });
-//   const useStore = create<TestState>(
-//     expires(
-//       (set) => ({
-//         count: 1,
-//         increment: () => set((state) => ({ count: state.count + 1 })),
-//       }),
-//       {
-//         expiry: 1000,
-//         expiryType: ExpiryType.Interval,
-//         onExpiry,
-//         buffer: 200,
-//       }
-//     )
-//   );
+it('Should handle buffer time', async () => {
+  const onExpiry = jest.fn().mockReturnValue({ count: 0 });
+  const useStore = create<TestState>(
+    expires(
+      (set) => ({
+        count: 1,
+        increment: () => set((state) => ({ count: state.count + 1 })),
+      }),
+      {
+        expiry: 1000,
+        expiryType: ExpiryType.Interval,
+        onExpiry,
+        buffer: 200,
+      }
+    )
+  );
 
-//   expect(useStore.getState().count).toBe(1);
-//   await advanceTimers(800);
-//   expect(onExpiry).toHaveBeenCalled();
-//   expect(useStore.getState().count).toBe(0);
-// });
+  expect(useStore.getState().count).toBe(1);
+  await advanceTimers(800);
+  expect(onExpiry).toHaveBeenCalled();
+  expect(useStore.getState().count).toBe(0);
+});
 
 it('Should reschedule expiry when store key changes', async () => {
   const onExpiry = jest.fn().mockReturnValue({ count: 0 });
@@ -129,7 +129,7 @@ it('Should reschedule expiry when store key changes', async () => {
   useStore.getState().setExpiryTime!(Date.now() + 2000);
   jest.advanceTimersByTime(1000);
   expect(onExpiry).not.toHaveBeenCalled();
-  // await advanceTimers(1000);
-  // expect(onExpiry).toHaveBeenCalled();
-  // expect(useStore.getState().count).toBe(0);
+  await advanceTimers(1000);
+  expect(onExpiry).toHaveBeenCalled();
+  expect(useStore.getState().count).toBe(0);
 });

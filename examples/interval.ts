@@ -1,7 +1,5 @@
 import {create} from "zustand";
 import {expires, ExpiryType} from "../src/expires";
-import {sleep} from "./utils/sleep";
-import assert = require("node:assert");
 
 /**
  * A simple store that resets itself on a regular interval
@@ -30,27 +28,3 @@ const useSimpleExpiringStore = create<State>(
         }),
         {expiry: expiry, expiryType: ExpiryType.Interval, onExpiry: reset }
     ));
-
-const getState = useSimpleExpiringStore.getState;
-const increment = getState().actions.increment;
-
-const startTime = Date.now();
-
-async function test() {
-    const counts: number[] = [];
-    while (Date.now() < startTime + 2*expiry + 1000) {
-        counts.push(getState().count);
-        console.log(counts)
-        increment();
-        await sleep(1);
-    }
-
-    return counts
-}
-
-test().then((counts) => {
-    const numZeros = counts.filter((c) => c === 0).length;
-    assert(numZeros > 2);
-    assert(numZeros < counts.length);
-    console.log("PASS")
-})
