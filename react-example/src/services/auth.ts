@@ -1,6 +1,6 @@
 import { useAuthStore } from "../stores/authStore";
 import { useUserStore } from "../stores/userStore";
-import {AuthStatus} from "../types";
+import {AuthStatus} from "../../types";
 
 type RefreshTokenResponse = {
     accessToken: string;

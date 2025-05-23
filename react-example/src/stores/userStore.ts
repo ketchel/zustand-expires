@@ -1,4 +1,4 @@
-import {UserState} from "../types";
+import {UserState} from "../../types";
 import { persist } from "zustand/middleware";
 import { create } from "zustand";
 

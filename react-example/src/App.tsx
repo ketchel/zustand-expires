@@ -2,7 +2,7 @@ import React from 'react';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
 import { useAuthStore } from './stores/authStore';
-import { AuthStatus } from './types';
+import { AuthStatus } from '../types';
 import { Login } from "./components/Login";
 import { Home } from "./components/Home";
 

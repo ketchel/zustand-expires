@@ -2,7 +2,7 @@ import {create} from "zustand";
 import {persist} from "zustand/middleware";
 import {expires, ExpiryType} from "../../../src/expires";
 import {refreshToken} from "../services/auth";
-import {AuthStatus, AuthState} from "../types";
+import {AuthStatus, AuthState} from "../../types";
 
 type AuthActions = {
     reset: () => void;

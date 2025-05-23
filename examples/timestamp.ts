@@ -1,7 +1,5 @@
 import {create} from "zustand";
 import {expires, ExpiryType} from "../src/expires";
-import {sleep} from "./utils/sleep";
-import assert = require("node:assert");
 
 /**
  * A simple store that resets itself after a certain time.
