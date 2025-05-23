@@ -8,6 +8,7 @@ export type AuthState = {
     accessToken: string;
     refreshToken: string;
     expiry: number;
+    numRefreshes: number;
     authStatus: AuthStatus;
 }
 

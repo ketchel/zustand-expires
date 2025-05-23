@@ -7,7 +7,7 @@ type RefreshTokenResponse = {
     refreshToken: string;
 }
 
-const expiresInMins = 2;
+export const expiresInMins = 1;
 
 export async function refreshToken(refreshToken: string): Promise<RefreshTokenResponse> {
     const jsonBody = JSON.stringify({

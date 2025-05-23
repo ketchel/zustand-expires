@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Container, TextField, Button, Typography, Box } from '@mui/material';
+import { Container, TextField, Button, Typography, Box, Link } from '@mui/material';
 import {login} from "../services/auth";
 
 export function Login() {
@@ -23,6 +23,9 @@ export function Login() {
             <Box display="flex" flexDirection="column" alignItems="center" mt={8}>
                 <Typography variant="h4" gutterBottom>
                     Login
+                </Typography>
+                <Typography variant="body2" gutterBottom>
+                    (Find available users <Link href="https://dummyjson.com/users" target="_blank">here</Link>)
                 </Typography>
                 <TextField
                     error={didLoginFail}
